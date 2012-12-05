@@ -23,7 +23,7 @@ Details of modules:
 	- net.aeten.core                    -> requires net.jcip.annotations, org.slf4j
 	- net.aeten.core.alert              -> requires net.aeten.core (alert event management for application user destination)
 	- net.aeten.core.gui                -> GUI tools, independent from any GUI framework
-	- net.aeten.core.gui.swing          -> requires net.aeten.core (SWING part of GUI tools)
+	- net.aeten.core.gui.swing          -> requires net.aeten.core.gui (SWING part of GUI tools)
 	- net.aeten.core.messenger          -> requires net.aeten.core
 	- net.aeten.core.messenger.stream   -> requires net.aeten.core, net.aeten.core.messenger, net.aeten.core.stream
 	- net.aeten.core.parsing.properties -> net.aeten.core
