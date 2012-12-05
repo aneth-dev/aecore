@@ -44,8 +44,8 @@
 	<target name="compile-full" depends="spi" description="compile the source ">
 		<delete dir="generated" failonerror="false" />
 		<mkdir dir="generated"/>
-		<javac destdir="${build}" includeantruntime="false" compiler="javac1.7" debuglevel="DEBUG" fork="false">
-			<compilerarg line="-processorpath dist/net.aeten.core.jar -s ${src.generated}" />
+		<javac destdir="${build}" includeantruntime="false" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" fork="false">
+			<compilerarg line="-processorpath dist/net.aeten.core.jar -s '${src.generated}'" />
 			<src path="${src.generated}" />
 			<src>
 				<dirset dir="src">
