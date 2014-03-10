@@ -10,38 +10,38 @@ ifeq "$(JAVAC)" ""
 endif
 JAR := $(shell dirname `which $(JAVAC)`)/jar
 
-FIND_SOURCE_PATH = \
-	find src/ test/ -maxdepth 1 -type d -name \*.$@|awk 'BEGIN {source=""} {if (length(source) == 0 || length($$0) < length(source)) {source=$$0}} END {print source}'
-	
 
-COMPILE = \
-	@echo $@ deps $^ ;\
-	SOURCE_PATH=`$(FIND_SOURCE_PATH)` ;\
-	echo $$SOURCE_PATH;\
-	MODULE=`basename $$SOURCE_PATH` ;\
-	BUILD_PATH=$(BUILD_DIR)/$$MODULE ;\
-	GENERATED_PATH=$(GENERATED_DIR)/$$MODULE ;\
-	rm -rf $$GENERATED_PATH ;\
-	mkdir --parent $$GENERATED_PATH $$BUILD_PATH dist ;\
-	CLASSES=$$(find $$SOURCE_PATH -type f -name *.java) ;\
-	JAVA_FILES=$$CLASSES ;\
-	if [ $$MODULE = "net.aeten.core" ] || [ $$MODULE = "net.jcip.annotations" ]; then\
-		PROCESSOR="-proc:none";\
-	else\
-		PROCESSOR="-processorpath $(BUILD_DIR)/net.aeten.core";\
-	fi;\
-	CLASS_PATH=`find build -maxdepth 1 -mindepth 1 -type d ! -name $$MODULE | paste -sd :`;\
-	CLASS_PATH_OPT=`if [ ! -z $$CLASS_PATH ]; then echo -classpath $$CLASS_PATH; fi` ;\
-	JAVAC_CMD="$(JAVAC) $(JFLAGS) $$CLASS_PATH_OPT -d $$BUILD_PATH -s $$GENERATED_PATH -source $(SOURCE_VERSION) -target $(TARGET_VERSION) $$PROCESSOR -sourcepath $$SOURCE_PATH" ;\
-	echo $$JAVAC_CMD $$CLASSES;\
-	$$JAVAC_CMD $$CLASSES;\
-	for resource in `find $$SOURCE_PATH -type f ! -name \*.java|sed "s@$$SOURCE_PATH/@@"`; do\
-		mkdir --parent $$BUILD_PATH/`dirname $$resource`;\
-		CP="cp $$SOURCE_PATH/$$resource $$BUILD_PATH/`dirname $$resource`";\
-		echo $$CP;\
-		`$$CP`;\
-	done ;\
-	if [ $(DIST) = "JAR" ]; then $(JAR) cf $(DIST_DIR)/$$MODULE.jar -C $$BUILD_PATH . & fi
+.ONESHELL:
+
+define COMPILE
+@echo Compile module $@ $(shell [ ! -z "$^" ] && echo wich depends on $(shell echo $^|sed -r 's/\s+/, /g'))
+
+$(eval SOURCE_PATH = $(shell find src/ test/ -maxdepth 1 -type d -name \*.$(@) | awk 'BEGIN {source=""} {if (length(source) == 0 || length($$0) < length(source)) {source=$$0}} END {print source}'))
+$(eval MODULE = $(shell basename $(SOURCE_PATH)))
+$(eval CLASS_PATH =)
+$(foreach dependence, $^,
+	$(eval DEPEPEDENCE = $(shell basename $$(find src/ test/ -maxdepth 1 -type d -name \*.$(dependence) | awk 'BEGIN {source=""} {if (length(source) == 0 || length($$0) < length(source)) {source=$$0}} END {print source}')))
+	$(eval CLASS_PATH += $(BUILD_DIR)/$(DEPEPEDENCE) $(DEPEPEDENCIES_$(dependence)))
+)
+$(eval DEPEPEDENCIES_$@ = $(CLASS_PATH))
+$(eval CLASS_PATH_OPT = $(shell if [ ! -z "$(CLASS_PATH)" ]; then echo -classpath $(shell echo $(CLASS_PATH)|sed -r 's/\s+/:/g'); fi))
+$(eval BUILD_PATH = $(BUILD_DIR)/$(MODULE))
+$(eval GENERATED_PATH = $(GENERATED_DIR)/$(MODULE))
+-rm -rf $(GENERATED_PATH)
+-mkdir --parent $(GENERATED_PATH) $(BUILD_PATH) dist
+$(eval CLASSES = $(shell find $(SOURCE_PATH) -type f -name *.java))
+$(eval PROCESSOR_OPT = $(shell ([ $(MODULE) = "net.aeten.core" ] || [ $(MODULE) = "net.jcip.annotations" ]) && echo -proc:none || echo -processorpath $(BUILD_DIR)/net.aeten.core))
+$(JAVAC) $(JFLAGS) $(CLASS_PATH_OPT) -d $(BUILD_PATH) -s $(GENERATED_PATH) -source $(SOURCE_VERSION) -target $(TARGET_VERSION) $(PROCESSOR_OPT) -sourcepath $(SOURCE_PATH) $(CLASSES)
+$(foreach resource, $(shell find $(SOURCE_PATH) -type f ! -name \*.java|sed "s@$(SOURCE_PATH)/@@"),
+	@-mkdir --parent $(BUILD_PATH)/`dirname $(resource)`
+	cp $(SOURCE_PATH)/$(resource) $(BUILD_PATH)/`dirname $(resource)`
+)
+$(if ifeq($(DIST)==JAR),
+	$(JAR) cf $(DIST_DIR)/$(MODULE).jar -C $(BUILD_PATH) . &
+)
+endef # COMPILE
+
+$(info Make command goals\: $(MAKECMDGOALS))
 
 all: src test
 
