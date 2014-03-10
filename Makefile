@@ -19,23 +19,23 @@ all: src test
 # Sources
 SRC = jcip.annotations core alert stream messenger messenger.stream parsing.properties parsing.xml parsing.yaml
 src: $(SRC)
-jcip.annotations:; $(COMPILE)
-core: jcip.annotations; $(COMPILE)
-alert: core; $(COMPILE)
-stream: core; $(COMPILE)
-messenger: core; $(COMPILE)
-messenger.stream: messenger stream; $(COMPILE)
-parsing.properties: core; $(COMPILE)
-parsing.xml: core; $(COMPILE)
-parsing.yaml: core; $(COMPILE)
+jcip.annotations:   ;                 $(COMPILE)
+core:               jcip.annotations; $(COMPILE)
+alert:              core;             $(COMPILE)
+stream:             core;             $(COMPILE)
+messenger:          core;             $(COMPILE)
+messenger.stream:   messenger stream; $(COMPILE)
+parsing.properties: core;             $(COMPILE)
+parsing.xml:        core;             $(COMPILE)
+parsing.yaml:       core;             $(COMPILE)
 
 # Tests
 TEST = messenger.test parsing.test stream.test spi.test
 test: $(TEST)
-messenger.test: messenger.stream parsing.yaml; $(COMPILE)
-parsing.test: parsing.properties parsing.xml parsing.yaml; $(COMPILE)
-stream.test: stream; $(COMPILE)
-spi.test: core; $(COMPILE)
+messenger.test: messenger.stream parsing.yaml;               $(COMPILE) $(RUN_TEST)
+parsing.test:   parsing.properties parsing.xml parsing.yaml; $(COMPILE) $(RUN_TEST)
+stream.test:    stream;                                      $(COMPILE) $(RUN_TEST)
+spi.test:       core;                                        $(COMPILE) $(RUN_TEST)
 
 .PHONY: all src test $(SRC) $(TEST)
 
@@ -71,3 +71,8 @@ $(if ifeq($(DIST)==JAR),
 )
 endef # COMPILE
 
+
+# TODO
+define RUN_TEST
+@echo Run test $@
+endef
