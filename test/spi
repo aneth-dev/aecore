@@ -1,0 +1,11 @@
+#!/bin/sh
+#JAVA=jdk1.8.0/bin/java
+JAVA=java
+
+DIR=$(dirname $0)
+CLASS_PATH=$(find ${DIR}/../dist/ -name \*.jar|paste -sd :)
+START=$(date +%s%N | cut -b1-13) 
+$JAVA -classpath $CLASS_PATH net.aeten.core.spi.test.SpiTest\$SpiTestImpl
+END=$(date +%s%N | cut -b1-13)
+TIME=$(echo "($END-$START)"|bc)
+echo $TIME ms

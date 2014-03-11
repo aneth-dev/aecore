@@ -1,0 +1,3 @@
+[submodule "cots/slf4j"]
+	path = cots/slf4j
+	url = git://github.com/aeten/slf4j.git
