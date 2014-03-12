@@ -1,4 +1,4 @@
-package net.aeten.core.jna;
+package net.aeten.core.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,32 +8,19 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import com.sun.jna.Native;
-import com.sun.jna.Platform;
+import net.aeten.core.Platform;
 
-public class LibraryLoader {
+public class NativeLibraryLoader {
 	static {
 		for (File file: getTempDir ().listFiles ()) {
 			file.delete ();
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T loadFromJar(Class<T> interfaceClass,
-			String libName,
-			String... dependencies) {
-		for (String lib : dependencies) {
-			loadNativeLibraryFromJar (interfaceClass, lib);
-		}
-		return (T) Native.loadLibrary (libName, interfaceClass);
-	}
-
-	private static void loadNativeLibraryFromJar(Class<?> loadinClass,
-			String lname) {
+	public static File loadNativeLibrary (	Class <?> loadinClass,
+														String lname) {
 		String libname = System.mapLibraryName (lname);
-		String arch = System.getProperty ("os.arch");
-		String name = System.getProperty ("os.name");
-		String resourceName = getNativeLibraryResourcePath (Platform.getOSType (), arch, name) + "/" + libname;
+		String resourceName = getNativeResourcePath () + "/" + libname;
 		URL url = loadinClass.getResource (resourceName);
 		boolean unpacked = false;
 
@@ -43,7 +30,7 @@ public class LibraryLoader {
 			url = loadinClass.getResource (resourceName);
 		}
 		if (url == null) {
-			throw new UnsatisfiedLinkError ("jnidispatch (" + resourceName + ") not found in resource path");
+			throw new UnsatisfiedLinkError ("resource " + resourceName + " not found");
 		}
 
 		File lib = null;
@@ -59,7 +46,7 @@ public class LibraryLoader {
 		} else {
 			InputStream is = loadinClass.getResourceAsStream (resourceName);
 			if (is == null) {
-				throw new Error ("Can't obtain jnidispatch InputStream (" + resourceName + ")");
+				throw new Error ("Can't obtain InputStream (" + resourceName + ")");
 			}
 
 			FileOutputStream fos = null;
@@ -68,9 +55,9 @@ public class LibraryLoader {
 				 * except on windows, to avoid problems with Web Start.
 				 */
 				File dir = getTempDir ();
-				lib = new File(dir, lname + (Platform.isWindows () ? ".dll" : ""));
+				lib = new File (dir, lname + (Platform.isWindows ()? ".dll": ""));
 				if (lib.exists ()) {
-					return;
+					return lib;
 				}
 				lib.deleteOnExit ();
 				fos = new FileOutputStream (lib);
@@ -80,16 +67,16 @@ public class LibraryLoader {
 					fos.write (buf, 0, count);
 				}
 				unpacked = true;
-			} catch (IOException e) {
-				throw new Error ("Failed to create temporary file for jnidispatch library: " + e);
+			} catch (IOException exception) {
+				throw new Error ("Failed to create temporary file for library: ", exception);
 			} finally {
 				try {
 					is.close ();
-				} catch (IOException e) {}
+				} catch (IOException exception) {}
 				if (fos != null) {
 					try {
 						fos.close ();
-					} catch (IOException e) {}
+					} catch (IOException exception) {}
 				}
 			}
 		}
@@ -102,6 +89,37 @@ public class LibraryLoader {
 		if (unpacked) {
 			deleteNativeLibrary (lib.getAbsolutePath ());
 		}
+		return lib;
+	}
+
+	public static String getNativeResourcePath () {
+		String osPrefix;
+		switch (Platform.OS) {
+		case WINDOWS:
+			osPrefix = "win32-" + Platform.ARCH;
+			break;
+		case WINDOWSCE:
+			osPrefix = "w32ce-" + Platform.ARCH;
+			break;
+		case MAC:
+			osPrefix = "darwin";
+			break;
+		case LINUX:
+			osPrefix = "linux-" + Platform.ARCH;
+			break;
+		case SOLARIS:
+			osPrefix = "sunos-" + Platform.ARCH;
+			break;
+		default:
+			osPrefix = Platform.OS.toString ();
+			int space = osPrefix.indexOf (" ");
+			if (space != -1) {
+				osPrefix = osPrefix.substring (0, space);
+			}
+			osPrefix += "-" + Platform.ARCH;
+			break;
+		}
+		return osPrefix;
 	}
 
 	/** Remove any automatically unpacked native library.
@@ -115,7 +133,7 @@ public class LibraryLoader {
 	that introduces issues with cleaning up any extant JNA bits
 	(e.g. Memory) which may still need use of the library before shutdown.
 	*/
-	static boolean deleteNativeLibrary(String path) {
+	static boolean deleteNativeLibrary (String path) {
 		File flib = new File (path);
 		if (flib.delete ()) {
 			return true;
@@ -129,7 +147,7 @@ public class LibraryLoader {
 
 	/** Perform cleanup of automatically unpacked native shared library.
 	 */
-	static void markTemporaryFile(File file) {
+	static void markTemporaryFile (File file) {
 		// If we can't force an unload/delete, flag the file for later 
 		// deletion
 		try {
@@ -140,61 +158,11 @@ public class LibraryLoader {
 		}
 	}
 
-	static File getTempDir() {
+	static File getTempDir () {
 		File tmp = new File (System.getProperty ("java.io.tmpdir"));
-		File jnatmp = new File (tmp, "jna-" + System.getProperty ("user.name"));
-		jnatmp.mkdirs ();
-		return jnatmp.exists () ? jnatmp : tmp;
-	}
-
-	static String getNativeLibraryResourcePath(int osType,
-			String arch,
-			String name) {
-		String osPrefix;
-		arch = arch.toLowerCase ();
-		if ("powerpc".equals (arch)) {
-			arch = "ppc";
-		} else if ("powerpc64".equals (arch)) {
-			arch = "ppc64";
-		}
-		switch (osType) {
-		case Platform.WINDOWS:
-			if ("i386".equals (arch)) arch = "x86";
-			osPrefix = "win32-" + arch;
-			break;
-		case Platform.WINDOWSCE:
-			osPrefix = "w32ce-" + arch;
-			break;
-		case Platform.MAC:
-			osPrefix = "darwin";
-			break;
-		case Platform.LINUX:
-			if ("x86".equals (arch)) {
-				arch = "i386";
-			} else if ("x86_64".equals (arch)) {
-				arch = "amd64";
-			}
-			osPrefix = "linux-" + arch;
-			break;
-		case Platform.SOLARIS:
-			osPrefix = "sunos-" + arch;
-			break;
-		default:
-			osPrefix = name.toLowerCase ();
-			if ("x86".equals (arch)) {
-				arch = "i386";
-			}
-			if ("x86_64".equals (arch)) {
-				arch = "amd64";
-			}
-			int space = osPrefix.indexOf (" ");
-			if (space != -1) {
-				osPrefix = osPrefix.substring (0, space);
-			}
-			osPrefix += "-" + arch;
-			break;
-		}
-		return osPrefix;
+		File nativeTmp = new File (tmp, "java-native-" + System.getProperty ("user.name"));
+		nativeTmp.mkdirs ();
+		return nativeTmp.exists ()? nativeTmp: tmp;
 	}
 
 }

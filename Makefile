@@ -7,7 +7,7 @@ DIST ?= JAR
 all: src test
 
 # Sources
-SRC = core alert stream messenger messenger.stream parsing.properties parsing.xml parsing.yaml
+SRC = core alert stream messenger messenger.stream parsing.properties parsing.xml parsing.yaml gui gui.swing
 src: $(SRC)
 core::               jcip.annotations slf4j
 alert::              core
@@ -17,6 +17,8 @@ messenger.stream::   messenger stream slf4j
 parsing.properties:: core slf4j
 parsing.xml::        core
 parsing.yaml::       core
+gui::
+gui.swing::          gui
 
 # COST
 COTS = jcip.annotations slf4j

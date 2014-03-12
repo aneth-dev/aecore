@@ -1,7 +1,7 @@
 .classpath
 .project
 .settings
-.gitignore
+.factorypath
 *~
 bin/
 dist/

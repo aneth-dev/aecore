@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Provider (Receiver.class)
-public class StreamReceiver <Message> extends
+public class StreamReceiver<Message> extends
 		Receiver.ReceiverAdapter <Message> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger (StreamReceiver.class);
@@ -50,9 +50,11 @@ public class StreamReceiver <Message> extends
 	@Override
 	public final void disconnect () throws IOException {
 		InputStream in = inputStream.get ();
-		in.close ();
-		synchronized (this) {
+		if (in != null) {
+			in.close ();
 			inputStream.compareAndSet (in, null);
+		}
+		synchronized (this) {
 			connected = false;
 		}
 	}
