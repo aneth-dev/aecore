@@ -1,10 +1,7 @@
-.classpath
-.project
-.settings
-.factorypath
 *~
 bin/
 dist/
 build/
 generated/
+eclipse-workspace/
 .touch/

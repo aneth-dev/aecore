@@ -1,8 +1,9 @@
 SOURCE_VERSION = 1.7
 JFLAGS ?= -g:source,lines,vars -encoding utf8
-PROCESSOR_PATH = $(BUILD_DIR)/net.aeten.core
+PROCESSOR_FACTORIES_MODULES ?= net.aeten.core
 TOUCH_DIR = .touch
 DIST ?= JAR
+
 
 all: src test
 
@@ -18,7 +19,7 @@ parsing.properties:: core slf4j
 parsing.xml::        core
 parsing.yaml::       core
 gui::
-gui.swing::          gui
+gui.swing::          gui core
 
 # COST
 COTS = jcip.annotations slf4j
