@@ -5,7 +5,7 @@ Note:
 	API become quite stable.
 
 Current version:
-	0.0.9
+	0.1.0
 
 Provides:
 	- generic event transmitter and handler (synchronous and asynchronous)
@@ -16,17 +16,17 @@ Provides:
 
 Third party dependences: 
 	- net.jcip.annotations (Creative Commons Attribution License), included in sources
-	- org.slf4j (MIT License)
+	- org.slf4j (MIT License) (Fork from https://github.com/aeten/slf4 allow use of ServiceLoader)
 
 Details of modules:
-	- net.aeten.core                    -> requires net.jcip.annotations
+	- net.aeten.core                    -> requires net.jcip.annotations, org.slf4j
 	- net.aeten.core.alert              -> requires net.aeten.core (alert event management for application user destination)
-	- net.aeten.core.messenger          -> requires net.aeten.core
-	- net.aeten.core.messenger.stream   -> requires net.aeten.core, net.aeten.core.messenger, net.aeten.core.stream
-	- net.aeten.core.parsing.properties -> net.aeten.core
+	- net.aeten.core.messenger          -> requires net.aeten.core, org.slf4j
+	- net.aeten.core.messenger.stream   -> requires net.aeten.core, net.aeten.core.messenger, net.aeten.core.stream, org.slf4j
+	- net.aeten.core.parsing.properties -> net.aeten.core, org.slf4j
 	- net.aeten.core.parsing.xml        -> net.aeten.core
 	- net.aeten.core.parsing.yaml       -> net.aeten.core (a YAML parser in progress, see test/net.aeten.core.parsing.test/net/aeten/core/parsing/test/test.yaml in parsing branch for supported syntax)
-	- net.aeten.core.stream             -> requires net.aeten.core
+	- net.aeten.core.stream             -> requires net.aeten.core, org.slf4j
 
 	- net.aeten.core.jna                -> requires com.sun.jna
 Not under MIT license, contains one class with copy/past of code from a JNA part. Need to be recode in order to be fully integrated
