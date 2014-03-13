@@ -19,7 +19,7 @@ parsing.properties:: core slf4j
 parsing.xml::        core
 parsing.yaml::       core
 gui::
-gui.swing::          gui core
+gui.swing::          gui
 
 # COST
 COTS = jcip.annotations slf4j
@@ -33,7 +33,7 @@ test: $(TEST)
 messenger.test:: messenger.stream parsing.yaml slf4j;         $(RUN_TEST)
 parsing.test::   parsing.properties parsing.xml parsing.yaml; $(RUN_TEST)
 stream.test::    stream;                                      $(RUN_TEST)
-spi.test::       core;                                        $(RUN_TEST)
+spi.test::       core parsing.yaml;                           $(RUN_TEST)
 
 clean:
 	$(RM) -rf $(BUILD_DIR) $(DIST_DIR) $(GENERATED_DIR) $(TOUCH_DIR)
