@@ -21,7 +21,7 @@ parsing.yaml::       core
 gui::
 gui.swing::          gui
 
-# COST
+# COTS
 COTS = jcip.annotations slf4j
 cots: $(COTS)
 jcip.annotations::
@@ -46,5 +46,5 @@ endef
 
 SRC_DIRS = src/ test/
 MODULES = $(SRC) $(COTS) $(TEST)
--include java.mk
+include java.mk
 
