@@ -14,45 +14,40 @@ import net.aeten.core.spi.SpiInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Provider (Receiver.class)
-public class StreamReceiver<Message> extends
-		Receiver.ReceiverAdapter <Message> {
+@Provider(Receiver.class)
+public class StreamReceiver<Message> extends Receiver.ReceiverAdapter<Message> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger (StreamReceiver.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StreamReceiver.class);
 
 	@FieldInit
-	private final AtomicReference <InputStream> inputStream;
+	private final AtomicReference<InputStream> inputStream;
 	private final StreamReceiverInitalizer initalizer;
 
-	public StreamReceiver (@SpiInitializer StreamReceiverInitalizer init)
-			throws IOException {
-		super (init.getIdentifier ());
-		inputStream = new AtomicReference <> ();
+	public StreamReceiver(@SpiInitializer StreamReceiverInitalizer init) throws IOException {
+		super(init.getIdentifier());
+		inputStream = new AtomicReference<>();
 		initalizer = init;
 	}
 
-	public StreamReceiver (	String identifier,
-									InputStream inputStream) {
-		super (identifier);
-		this.inputStream = new AtomicReference <> (inputStream);
+	public StreamReceiver(String identifier, InputStream inputStream) {
+		super(identifier);
+		this.inputStream = new AtomicReference<>(inputStream);
 		initalizer = null;
 	}
 
 	@Override
-	protected void doConnect () throws IOException {
-		InputStream in = inputStream.get ();
-		if (initalizer == null && in == null) {
-			throw new IOException ("Unable to re-open input stream " + identifier);
-		}
-		inputStream.compareAndSet (null, (ObjectInputStream) initalizer.getInputStream ());
+	protected void doConnect() throws IOException {
+		InputStream in = inputStream.get();
+		if (initalizer == null && in == null) { throw new IOException("Unable to re-open input stream " + identifier); }
+		inputStream.compareAndSet(null, (ObjectInputStream) initalizer.getInputStream());
 	}
 
 	@Override
-	public final void disconnect () throws IOException {
-		InputStream in = inputStream.get ();
+	public final void disconnect() throws IOException {
+		InputStream in = inputStream.get();
 		if (in != null) {
-			in.close ();
-			inputStream.compareAndSet (in, null);
+			in.close();
+			inputStream.compareAndSet(in, null);
 		}
 		synchronized (this) {
 			connected = false;
@@ -60,24 +55,24 @@ public class StreamReceiver<Message> extends
 	}
 
 	@Override
-	protected void doDisconnect () throws IOException {
+	protected void doDisconnect() throws IOException {
 		// Not used (disconnect overrides)
 	}
 
-	@SuppressWarnings ("unchecked")
+	@SuppressWarnings("unchecked")
 	@Override
-	public synchronized void receive (MessengerEventData <Message> data) throws IOException {
+	public synchronized void receive(MessengerEventData<Message> data) throws IOException {
 		try {
-			Message message = (Message) ((ObjectInputStream) inputStream.get ()).readObject ();
-			data.setMessage (message);
+			Message message = (Message) ((ObjectInputStream) inputStream.get()).readObject();
+			data.setMessage(message);
 		} catch (IOException
 					| ClassNotFoundException exception) {
-			if (inputStream.get ().markSupported ()) {
-				LOGGER.error (getIdentifier () + " has not been able to read object. Trying to reset the stream…", exception);
-				inputStream.get ().reset ();
-				receive (data);
+			if (inputStream.get().markSupported()) {
+				LOGGER.error(getIdentifier() + " has not been able to read object. Trying to reset the stream…", exception);
+				inputStream.get().reset();
+				receive(data);
 			} else {
-				throw new IOException (exception);
+				throw new IOException(exception);
 			}
 		}
 	}

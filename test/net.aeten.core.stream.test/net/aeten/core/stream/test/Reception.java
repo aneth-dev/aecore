@@ -24,7 +24,8 @@ public class Reception {
 			while (true) {
 				try {
 					System.out.println("Object recieved from reception: " + inputStream.readObject());
-				} catch (IOException | ClassNotFoundException exception) {
+				} catch (IOException
+							| ClassNotFoundException exception) {
 					exception.printStackTrace();
 				}
 			}

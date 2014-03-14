@@ -12,7 +12,7 @@ import net.aeten.core.stream.editor.StreamEditor;
  */
 public class Encoder implements StreamEditor {
 
-	private ObjectInputStream	in	= null;
+	private ObjectInputStream in = null;
 
 	@Override
 	public void edit(DataInputStream in, DataOutputStream out) throws IOException {

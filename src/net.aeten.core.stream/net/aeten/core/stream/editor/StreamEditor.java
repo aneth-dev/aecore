@@ -9,6 +9,5 @@ import java.io.IOException;
  * @author Thomas Pérennou
  */
 public interface StreamEditor {
-	public void edit (DataInputStream in,
-							DataOutputStream out) throws IOException;
+	public void edit(DataInputStream in, DataOutputStream out) throws IOException;
 }

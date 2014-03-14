@@ -26,7 +26,8 @@ public class Emission {
 					outputStream.writeObject(object);
 					System.out.println("Object sent by emission: " + object);
 					Thread.sleep(2000);
-				} catch (IOException | InterruptedException exception) {
+				} catch (IOException
+							| InterruptedException exception) {
 					exception.printStackTrace();
 				}
 			}
