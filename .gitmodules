@@ -1,3 +1,12 @@
 [submodule "cots/slf4j"]
 	path = cots/slf4j
 	url = git://github.com/aeten/slf4j.git
+[submodule "cots/junit"]
+	path = cots/junit
+	url = https://github.com/junit-team/junit.git
+[submodule "cots/JavaHamcrest"]
+	path = cots/JavaHamcrest
+	url = https://github.com/hamcrest/JavaHamcrest.git
+[submodule "cots/qdox"]
+	path = cots/qdox
+	url = git@github.com:aeten/qdox.git
