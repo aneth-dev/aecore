@@ -1,4 +1,4 @@
-SOURCE_VERSION = 1.7
+SOURCE_VERSION = 1.8
 JFLAGS ?= -g:source,lines,vars -encoding utf8
 PROCESSOR_FACTORIES_MODULES ?= net.aeten.core
 TOUCH_DIR = .touch

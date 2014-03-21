@@ -9,7 +9,7 @@ import net.aeten.core.messenger.MessengerEventData;
 import net.aeten.core.messenger.Receiver;
 import net.aeten.core.spi.FieldInit;
 import net.aeten.core.spi.Provider;
-import net.aeten.core.spi.SpiInitializer;
+import net.aeten.core.spi.SpiConstructor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,8 @@ public class StreamReceiver<Message> extends Receiver.ReceiverAdapter<Message> {
 	private final AtomicReference<InputStream> inputStream;
 	private final StreamReceiverInitalizer initalizer;
 
-	public StreamReceiver(@SpiInitializer StreamReceiverInitalizer init) throws IOException {
+	@SpiConstructor
+	public StreamReceiver(StreamReceiverInitalizer init) throws IOException {
 		super(init.getIdentifier());
 		inputStream = new AtomicReference<>();
 		initalizer = init;

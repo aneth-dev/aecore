@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import net.aeten.core.net.UdpIpSocketFactory;
 import net.aeten.core.spi.FieldInit;
-import net.aeten.core.spi.SpiInitializer;
+import net.aeten.core.spi.SpiConstructor;
 
 /**
  * 
@@ -30,7 +30,8 @@ public class UdpIpInputStream extends InputStream {
 	private int available = 0;
 	private DatagramPacket currentPacket = null;
 
-	public UdpIpInputStream(@SpiInitializer UdpIpInputStreamInitializer init) {
+	@SpiConstructor
+	public UdpIpInputStream(UdpIpInputStreamInitializer init) {
 		this(init.getSocketFactory());
 	}
 

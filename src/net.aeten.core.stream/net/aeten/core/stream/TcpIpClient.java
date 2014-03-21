@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.aeten.core.spi.FieldInit;
-import net.aeten.core.spi.SpiInitializer;
+import net.aeten.core.spi.SpiConstructor;
 import net.jcip.annotations.GuardedBy;
 
 import org.slf4j.Logger;
@@ -105,7 +105,8 @@ public class TcpIpClient {
 		private final java.io.InputStream in;
 		private final InetSocketAddress destination;
 
-		public InputStream(@SpiInitializer TcpIpClientInputStreamInitializer init) throws IOException {
+		@SpiConstructor
+		public InputStream(TcpIpClientInputStreamInitializer init) throws IOException {
 			this(init.getDestination(), init.hasBind()? init.getBind(): false, init.hasReuse()? init.getReuse(): false, init.hasTimeout()? init.getTimeout(): -1);
 		}
 
@@ -164,7 +165,8 @@ public class TcpIpClient {
 		private final java.io.OutputStream out;
 		private final InetSocketAddress destination;
 
-		public OutputStream(@SpiInitializer TcpIpClientOutputStreamInitializer init) throws IOException {
+		@SpiConstructor
+		public OutputStream(TcpIpClientOutputStreamInitializer init) throws IOException {
 			this(init.getDestination(), init.hasBind()? init.getBind(): false, init.hasReuse()? init.getReuse(): false, init.hasTimeout()? init.getTimeout(): -1);
 		}
 

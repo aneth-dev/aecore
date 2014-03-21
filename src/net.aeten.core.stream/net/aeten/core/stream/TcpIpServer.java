@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.aeten.core.spi.FieldInit;
-import net.aeten.core.spi.SpiInitializer;
+import net.aeten.core.spi.SpiConstructor;
 import net.jcip.annotations.GuardedBy;
 
 import org.slf4j.Logger;
@@ -147,7 +147,8 @@ public class TcpIpServer {
 		/* volatile for finalize, lock for close */
 		private volatile boolean released = false;
 
-		public InputStream(@SpiInitializer TcpIpServerInputStreamInitializer init) throws IOException {
+		@SpiConstructor
+		public InputStream(TcpIpServerInputStreamInitializer init) throws IOException {
 			this(init.getDestination(), init.hasBind()? init.getBind(): false, init.hasReuse()? init.getReuse(): false, init.hasTimeout()? init.getTimeout(): -1, init.hasBacklog()? init.getBacklog(): -1);
 		}
 
@@ -248,7 +249,8 @@ public class TcpIpServer {
 		/* volatile for finalize, lock for close */
 		private volatile boolean released = false;
 
-		public OutputStream(@SpiInitializer TcpIpServerOutputStreamInitializer init) throws IOException {
+		@SpiConstructor
+		public OutputStream(TcpIpServerOutputStreamInitializer init) throws IOException {
 			this(init.getDestination(), init.hasBind()? init.getBind(): false, init.hasReuse()? init.getReuse(): false, init.hasTimeout()? init.getTimeout(): -1, init.hasBacklog()? init.getBacklog(): -1);
 		}
 

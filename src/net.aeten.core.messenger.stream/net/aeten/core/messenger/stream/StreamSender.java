@@ -8,7 +8,7 @@ import net.aeten.core.messenger.MessengerEventData;
 import net.aeten.core.messenger.Sender;
 import net.aeten.core.spi.FieldInit;
 import net.aeten.core.spi.Provider;
-import net.aeten.core.spi.SpiInitializer;
+import net.aeten.core.spi.SpiConstructor;
 
 @Provider(Sender.class)
 public class StreamSender<Message> extends Sender.SenderAdapter<Message> {
@@ -17,7 +17,8 @@ public class StreamSender<Message> extends Sender.SenderAdapter<Message> {
 	private volatile OutputStream outputStream;
 	private final StreamSenderInitalizer initalizer;
 
-	public StreamSender(@SpiInitializer StreamSenderInitalizer init) throws IOException {
+	@SpiConstructor
+	public StreamSender(StreamSenderInitalizer init) throws IOException {
 		super(init.getIdentifier());
 		initalizer = init;
 		connect();

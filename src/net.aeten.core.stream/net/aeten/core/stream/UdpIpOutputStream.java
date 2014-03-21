@@ -8,7 +8,7 @@ import java.net.InetSocketAddress;
 
 import net.aeten.core.net.UdpIpSocketFactory;
 import net.aeten.core.spi.FieldInit;
-import net.aeten.core.spi.SpiInitializer;
+import net.aeten.core.spi.SpiConstructor;
 
 /**
  *
@@ -23,7 +23,8 @@ public class UdpIpOutputStream extends OutputStream {
 	private byte[] buffer;
 	private int position = 0;
 
-	public UdpIpOutputStream(@SpiInitializer UdpIpOutputStreamInitializer init) {
+	@SpiConstructor
+	public UdpIpOutputStream(UdpIpOutputStreamInitializer init) {
 		this(init.getSocketFactory());
 	}
 

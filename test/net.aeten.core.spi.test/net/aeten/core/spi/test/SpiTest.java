@@ -8,7 +8,7 @@ import net.aeten.core.spi.Configuration;
 import net.aeten.core.spi.FieldInit;
 import net.aeten.core.spi.Provider;
 import net.aeten.core.spi.Service;
-import net.aeten.core.spi.SpiInitializer;
+import net.aeten.core.spi.SpiConstructor;
 
 public interface SpiTest {
 
@@ -19,7 +19,8 @@ public interface SpiTest {
 		@FieldInit()
 		private final String id;
 
-		public Foo(@SpiInitializer FooInitializer init) {
+		@SpiConstructor
+		public Foo(FooInitializer init) {
 			this.id = init.getId();
 		}
 
@@ -41,7 +42,8 @@ public interface SpiTest {
 		@FieldInit(required = false)
 		private final Map<String, Foo> foos;
 
-		protected SpiTestImpl(@SpiInitializer SpiTestInitializer init) {
+		@SpiConstructor
+		protected SpiTestImpl(SpiTestInitializer init) {
 			hello = init.getHello();
 			name = init.getName();
 			foos = init.hasFoos()? init.getFoos(): new HashMap<>();
