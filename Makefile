@@ -74,5 +74,5 @@ endef
 
 SRC_DIRS = src/ test/
 MODULES = $(SRC) $(COTS) $(TEST) $(TEST_COTS)
-include java.mk
+include cots/Java-make/java.mk
 
