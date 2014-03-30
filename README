@@ -5,7 +5,7 @@ Note:
 	API become quite stable.
 
 Current version:
-	0.1.0
+	0.1.1
 
 Provides:
 	- generic event transmitter and handler (synchronous and asynchronous)
