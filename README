@@ -1,11 +1,12 @@
-net.aeten.core is a java tools provider
+Æcore is a Java framework.
 
 Note:
-	This library is under MIT license (see LICENSE file).
-	API become quite stable.
+	Those libraries are under MIT license (see LICENSE file).
+	This repository is an enclosure of net.aeten.core* modules
+	API become quite stable but is under rework in order to use new Java 8 functionalities (see java8 branch).
 
 Current version:
-	0.1.0
+	0.2.0
 
 Provides:
 	- generic event transmitter and handler (synchronous and asynchronous)
@@ -21,14 +22,22 @@ Third party dependences:
 
 Details of modules:
 	- net.aeten.core                    -> requires net.jcip.annotations, org.slf4j
-	- net.aeten.core.alert              -> requires net.aeten.core (alert event management for application user destination)
-	- net.aeten.core.gui                -> GUI tools, independent from any GUI framework
-	- net.aeten.core.gui.swing          -> requires net.aeten.core.gui (SWING part of GUI tools)
 	- net.aeten.core.messenger          -> requires net.aeten.core, org.slf4j
 	- net.aeten.core.messenger.stream   -> requires net.aeten.core, net.aeten.core.messenger, net.aeten.core.stream, org.slf4j
 	- net.aeten.core.parsing.properties -> net.aeten.core, org.slf4j
 	- net.aeten.core.parsing.xml        -> net.aeten.core
 	- net.aeten.core.parsing.yaml       -> net.aeten.core (a YAML parser in progress, see test/net.aeten.core.parsing.test/net/aeten/core/parsing/test/test.yaml)
 	- net.aeten.core.stream             -> requires net.aeten.core, org.slf4j
+	- net.aeten.core.ui.alert           -> requires net.aeten.core (alert event management for application user destination)
+	- net.aeten.core.ui.graphical       -> GUI tools, independent from any GUI framework
+	- net.aeten.core.ui.swing           -> requires net.aeten.core.gui (SWING part of GUI tools)
 
-See test directory for samples
+See test directory for use samples.
+
+Setup:
+	git submodule update --init
+
+Switch to java8  branch:
+	git checkout java8
+	git submodule foreach --quiet 'echo $name|grep aeten && git checkout java8 || return 0'
+
