@@ -10,3 +10,24 @@
 [submodule "Java-make"]
 	path = Java-make
 	url = git@github.com:aeten/Java-make.git
+[submodule "cots/net.aeten.core.ui"]
+	path = cots/net.aeten.core.ui
+	url = git@github.com:aeten/net.aeten.core.ui.git
+[submodule "cots/net.aeten.core.ui.swing"]
+	path = cots/net.aeten.core.ui.swing
+	url = git@github.com:aeten/net.aeten.core.ui.swing.git
+[submodule "cots/net.aeten.core.messenger"]
+	path = cots/net.aeten.core.messenger
+	url = git@github.com:aeten/net.aeten.core.messenger.git
+[submodule "cots/net.aeten.core.messenger.stream"]
+	path = cots/net.aeten.core.messenger.stream
+	url = git@github.com:aeten/net.aeten.core.messenger.stream.git
+[submodule "cots/net.aeten.core.parsing"]
+	path = cots/net.aeten.core.parsing
+	url = git@github.com:aeten/net.aeten.core.parsing.git
+[submodule "cots/net.aeten.core.stream"]
+	path = cots/net.aeten.core.stream
+	url = git@github.com:aeten/net.aeten.core.stream.git
+[submodule "cots/net.aeten.core"]
+	path = cots/net.aeten.core
+	url = git@github.com:aeten/net.aeten.core.git
