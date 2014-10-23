@@ -31,3 +31,6 @@
 [submodule "cots/net.aeten.core"]
 	path = cots/net.aeten.core
 	url = git@github.com:aeten/net.aeten.core.git
+[submodule "cots/net.aeten.core.ipc"]
+	path = cots/net.aeten.core.ipc
+	url = git@github.com:aeten/net.aeten.core.ipc.git

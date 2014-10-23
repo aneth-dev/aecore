@@ -1,5 +1,6 @@
 SOURCE_VERSION = 1.7
 JFLAGS ?= -g:source,lines,vars -encoding utf8
+CFLAGS ?= -g
 PROCESSOR_FACTORIES_MODULES ?= net.aeten.core
 TOUCH_DIR = .touch
 
@@ -7,15 +8,16 @@ TOUCH_DIR = .touch
 all: compile jar eclipse src test
 
 # Sources
-SRC = core stream messenger messenger.stream parsing.properties parsing.xml parsing.yaml ui.alert ui.graphical ui.swing
+SRC = core ipc messenger messenger.stream stream parsing.properties parsing.xml parsing.yaml ui.alert ui.graphical ui.swing
 src: $(SRC)
 core::               jcip.annotations slf4j
-stream::             core slf4j
+ipc::                ipc.jni core
 messenger::          core slf4j
 messenger.stream::   messenger stream slf4j
 parsing.properties:: core slf4j
 parsing.xml::        core
 parsing.yaml::       core
+stream::             core slf4j
 ui.alert::           core
 ui.graphical::
 ui.swing::           ui.graphical
@@ -47,5 +49,12 @@ endef
 
 SRC_DIRS = src/ test/
 MODULES = $(SRC) $(COTS) $(TEST) $(TEST_COTS)
+
 include Java-make/java.mk
+
+IPC_HEADERS = -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/linux -Isrc/net.aeten.core
+ipc.jni:
+	-mkdir --parent src/net.aeten.core.ipc/net/aeten/core/ipc/linux-x86_64/
+	gcc -nocpp -std=gnu99 -fPIC -shared $(CFLAGS) $(IPC_HEADERS) src/net.aeten.core.ipc/net/aeten/core/ipc/jni_socket.c -o src/net.aeten.core.ipc/net/aeten/core/ipc/linux-x86_64/libjnisocket.so
+	gcc -nocpp -std=gnu99 -fPIC -shared $(CFLAGS) $(IPC_HEADERS) src/net.aeten.core.ipc/net/aeten/core/ipc/jni_ioctl.c -o src/net.aeten.core.ipc/net/aeten/core/ipc/linux-x86_64/libjniioctl.so
 
